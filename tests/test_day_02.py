@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 from days.day_02 import Round, OpponentChoice, PlayerChoice, RoundOutcome, \
-    RoundScore, PLAYER_SELECTION_TO_SCORE_DICT, SelectionScore, Game, GameScore
+    RoundScore, PLAYER_SELECTION_TO_SCORE_DICT, SelectionScore, Game, \
+    GameScore, ChallengePart
 
 INPUT_FILE_PATH = Path(__file__).parent.joinpath(
     "input-files", "day-02-simple.txt")
@@ -183,7 +184,11 @@ def test_game_from_file(file_path: Path, expected_game: Game) -> None:
         from_file method
     :type expected_game: Game
     """
-    actual_game = Game.from_file(file_path=file_path, split_string=" ")
+    actual_game = Game.from_file(
+        file_path=file_path,
+        split_string=" ",
+        challenge_part=ChallengePart.PART_1,
+    )
     assert actual_game == expected_game
 
 
@@ -209,7 +214,43 @@ def test_game_compute_score(
         compute_score method of a Game object to return
     :type expected_score: GameScore
     """
-    game = Game.from_file(file_path=file_path, split_string=" ")
+    game = Game.from_file(
+        file_path=file_path,
+        split_string=" ",
+        challenge_part=ChallengePart.PART_1,
+    )
+    actual_score = game.compute_score(
+        selection_score_dict=selection_score_dict)
+    assert actual_score == expected_score
+
+
+@pytest.mark.parametrize(
+    "file_path,expected_score,selection_score_dict",
+    zip(
+        [INPUT_FILE_PATH],
+        [12],
+        [PLAYER_SELECTION_TO_SCORE_DICT],
+    )
+)
+def test_game_compute_score_part_two(
+        file_path: Path,
+        expected_score: GameScore,
+        selection_score_dict: dict[PlayerChoice, SelectionScore]) -> None:
+    """
+    Verify the from_file method of the Game class produces the expected object.
+
+    :param file_path: A path to a file that defines the rounds of a game of
+        Rock Paper Scissors
+    :type file_path: Path
+    :param expected_score: The total score for a game we expect the
+        compute_score method of a Game object to return
+    :type expected_score: GameScore
+    """
+    game = Game.from_file(
+        file_path=file_path,
+        split_string=" ",
+        challenge_part=ChallengePart.PART_2,
+    )
     actual_score = game.compute_score(
         selection_score_dict=selection_score_dict)
     assert actual_score == expected_score
