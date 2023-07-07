@@ -10,7 +10,7 @@ INPUT_FILE_PATH = Path(__file__).parent.joinpath(
 
 
 @pytest.mark.parametrize(
-    "input_line,expected_game",
+    "input_line,expected_round",
     zip(
         INPUT_FILE_PATH.open(mode="r").readlines(),
         [
@@ -29,16 +29,16 @@ INPUT_FILE_PATH = Path(__file__).parent.joinpath(
         ]
     )
 )
-def test_game_from_string(input_line: str, expected_game: Round) -> None:
+def test_round_from_string(input_line: str, expected_round: Round) -> None:
     """
     Verify the from_string method of Round works as intended.
 
     :param input_line: A line from a file that defines a move by an opponent
         followed by a move from a player
     :type input_line: str
-    :param expected_game: The Round object we expect the from_string method to
+    :param expected_round: The Round object we expect the from_string method to
         create
-    :type expected_game: Round
+    :type expected_round: Round
     """
-    actual_game = Round.from_string(input_string=input_line, split_string=" ")
-    assert actual_game == expected_game
+    actual_round = Round.from_string(input_string=input_line, split_string=" ")
+    assert actual_round == expected_round
