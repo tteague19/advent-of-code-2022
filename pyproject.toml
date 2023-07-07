@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "advent-of-code-2022"
+version = "0.1.0"
+description = ""
+authors = ["Thomas Teague <24764359+tteague19@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
