@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from days.day_02 import Round, OpponentChoice, PlayerChoice, RoundOutcome, \
-    RoundScore, PLAYER_SELECTION_TO_SCORE_DICT, SelectionScore
+    RoundScore, PLAYER_SELECTION_TO_SCORE_DICT, SelectionScore, Game
 
 INPUT_FILE_PATH = Path(__file__).parent.joinpath(
     "input-files", "day-02-simple.txt")
@@ -146,3 +146,42 @@ def test_round_compute_score(
     actual_score = round_obj.compute_score(
         selection_score_dict=selection_score_dict)
     assert actual_score == expected_score
+
+
+@pytest.mark.parametrize(
+    "file_path,expected_game",
+    zip(
+        [INPUT_FILE_PATH],
+        [
+            Game(
+                rounds=[
+                    Round(
+                        opponent_choice=OpponentChoice.ROCK,
+                        player_choice=PlayerChoice.PAPER,
+                    ),
+                    Round(
+                        opponent_choice=OpponentChoice.PAPER,
+                        player_choice=PlayerChoice.ROCK,
+                    ),
+                    Round(
+                        opponent_choice=OpponentChoice.SCISSORS,
+                        player_choice=PlayerChoice.SCISSORS,
+                    ),
+                ]
+            ),
+        ]
+    )
+)
+def test_game_from_file(file_path: Path, expected_game: Game) -> None:
+    """
+    Verify the from_file method of the Game class produces the expected object.
+
+    :param file_path: A path to a file that defines the rounds of a game of
+        Rock Paper Scissors
+    :type file_path: Path
+    :param expected_game: The game object we expect to construct in the
+        from_file method
+    :type expected_game: Game
+    """
+    actual_game = Game.from_file(file_path=file_path, split_string=" ")
+    assert actual_game == expected_game
