@@ -4,6 +4,7 @@ from enum import StrEnum, IntEnum
 from pathlib import Path
 from typing import Sequence
 
+GameScore = int
 RoundScore = int
 SelectionScore = int
 
@@ -151,3 +152,23 @@ class Game:
                 for line in f.readlines()
             ]
         return Game(rounds=rounds)
+
+    def compute_score(
+            self,
+            selection_score_dict: dict[PlayerChoice, SelectionScore],
+    ) -> GameScore:
+        """
+        Compute the total score based on the individual round scores.
+
+        :param selection_score_dict: A dictionary that maps a player choice in
+            a round to a score associated with that choice
+        :type selection_score_dict: dict[PlayerChoice, SelectionScore]
+        :return: The total score for the game, which is the sum of the scores
+            for each round of the game
+        :rtype: GameScore
+        """
+        round_scores = [
+            round_obj.compute_score(selection_score_dict=selection_score_dict)
+            for round_obj in self.rounds
+        ]
+        return sum(round_scores)
