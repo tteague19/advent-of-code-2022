@@ -1,6 +1,8 @@
 """Implements the solution to Day 2 of the Advent of Code 2022."""
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import StrEnum, IntEnum
+
+RoundScore = int
 
 
 class OpponentChoice(StrEnum):
@@ -15,6 +17,13 @@ class PlayerChoice(StrEnum):
     ROCK = "X"
     PAPER = "Y"
     SCISSORS = "Z"
+
+
+class RoundOutcome(IntEnum):
+    """Enumerates the possible outcomes of a round and the outcome scores."""
+    LOSS = 0
+    DRAW = 3
+    WIN = 6
 
 
 @dataclass
@@ -46,3 +55,43 @@ class Round:
             opponent_choice=list(OpponentChoice)[opponent_move_idx],
             player_choice=list(PlayerChoice)[player_move_idx],
         )
+
+    def determine_outcome(self) -> RoundOutcome:
+        """
+        Determine the outcome of a game of Rock Paper Scissors for the player.
+
+        :return: The outcome of the round the object represents
+        :rtype: RoundOutcome
+        """
+        if self.player_choice.name == self.opponent_choice.name:
+            return RoundOutcome.DRAW
+
+        player_wins = any(
+            [
+                all(
+                    [
+                        self.player_choice == PlayerChoice.ROCK,
+                        self.opponent_choice == OpponentChoice.SCISSORS
+                    ]
+                ),
+                all(
+                    [
+                        self.player_choice == PlayerChoice.PAPER,
+                        self.opponent_choice == OpponentChoice.ROCK
+                    ]
+                ),
+                all(
+                    [
+                        self.player_choice == PlayerChoice.SCISSORS,
+                        self.opponent_choice == OpponentChoice.PAPER
+                    ]
+                )
+            ]
+        )
+
+        if player_wins:
+            return RoundOutcome.WIN
+
+        # If the outcome is not a draw or a scenario where the player wins,
+        # the player must have lost.
+        return RoundOutcome.LOSS
