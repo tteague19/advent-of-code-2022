@@ -1,6 +1,8 @@
 """Implements the solution to Day 2 of the Advent of Code 2022."""
 from dataclasses import dataclass
 from enum import StrEnum, IntEnum
+from pathlib import Path
+from typing import Sequence
 
 RoundScore = int
 SelectionScore = int
@@ -120,3 +122,32 @@ class Round:
         outcome = self.determine_outcome()
         selection_score = selection_score_dict[self.player_choice]
         return outcome.value + selection_score
+
+
+@dataclass
+class Game:
+    """Models a series of rounds of a game of Rock Paper Scissors"""
+    rounds: Sequence[Round]
+
+    @classmethod
+    def from_file(cls, file_path: Path, split_string: str) -> "Game":
+        """
+        Construct a Game object from the contents of a structured input file.
+
+        :param file_path: The path to a file where each line defines the move
+            an opponent makes followed by the :param:`split_string` and then
+            the move the player makes
+        :type file_path: Path
+        :param split_string: The string that separates the opponent and player
+            moves in each line of the file at :param:`file_path`
+        :type split_string: str
+        :return: An object of the Game class whose rounds attribute is
+            constructed from the file at :param:`file_path`
+        :rtype: Game
+        """
+        with file_path.open(mode="r") as f:
+            rounds = [
+                Round.from_string(input_string=line, split_string=split_string)
+                for line in f.readlines()
+            ]
+        return Game(rounds=rounds)
