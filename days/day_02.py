@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from enum import StrEnum, IntEnum
 
 RoundScore = int
+SelectionScore = int
 
 
 class OpponentChoice(StrEnum):
@@ -24,6 +25,13 @@ class RoundOutcome(IntEnum):
     LOSS = 0
     DRAW = 3
     WIN = 6
+
+
+PLAYER_SELECTION_TO_SCORE_DICT: dict[PlayerChoice, SelectionScore] = {
+    PlayerChoice.ROCK: 1,
+    PlayerChoice.PAPER: 2,
+    PlayerChoice.SCISSORS: 3,
+}
 
 
 @dataclass
@@ -95,3 +103,20 @@ class Round:
         # If the outcome is not a draw or a scenario where the player wins,
         # the player must have lost.
         return RoundOutcome.LOSS
+
+    def compute_score(
+            self,
+            selection_score_dict: dict[PlayerChoice, SelectionScore],
+    ) -> RoundScore:
+        """
+        Compute the total score of the round represented by the object
+
+        :param selection_score_dict: A dictionary that maps a player choice to
+            a score associated with that choice
+        :type selection_score_dict: dict[PlayerChoice, SelectionScore]
+        :return: The total score of the round with respect to the player
+        :rtype: RoundScore
+        """
+        outcome = self.determine_outcome()
+        selection_score = selection_score_dict[self.player_choice]
+        return outcome.value + selection_score
